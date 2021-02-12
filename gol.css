@@ -1,0 +1,15 @@
+body{
+    margin:0;
+
+}
+
+#title{
+    font-family: 'Big Shoulders Display', cursive;
+    padding-top: 1em;
+    padding-left: 1em;
+
+}
+
+#gol{
+    background-color: lavender;
+}
