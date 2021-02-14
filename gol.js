@@ -22,13 +22,14 @@ for (let i = 0; i < 45; i++) {
         arr[i][j] = 0
     }
 }
-arr[5][5] = 1
+arr[5][4] = 1
+arr[4][5] = 1
 arr[4][4] = 1
 arr[6][4] = 1
-arr[6][3] = 1
+arr[6][5] = 1
 class Game {
     constructor(arr) {
-        this.arr = arr;
+        this.arr = [...arr];
         this.hsize = 80;
         this.vsize = this.hsize * 9 / 16;
         this.state = 'pause'
@@ -48,41 +49,37 @@ class Game {
     }
     count_alive_neighbours(row, col) {
         let alive = 0;
+
         for (let i = row - 1; i <= row + 1; i++) {
             for (let j = col - 1; j <= col + 1; j++) {
                 if (i >= 0 && j >= 0 && i < this.arr.length && j < this.arr[0].length) {
-                    if (j === row && j === col && i === j)
-                        continue
-                    if (this.arr[i][j] === 1)
+                    if (this.arr[i][j] === 1 && i != j && i != col)
                         alive += 1;
                 }
             }
         }
+
         return alive;
     }
     step() {
         let nextarr = [...this.arr]
-        console.log(nextarr);
-        for (let i = 0; i < this.hsize; i++) {
-            for (let j = 0; j < this.wsize; i++) {
-                let neigh = this.count_alive_neighbours(i, j);
-                if (i === 5 && j === 5)
-                    console.log(neigh)
+            //console.log(nextarr);
+        let neigh = 8;
+        for (let i = 0; i < this.arr.length; i++) {
+            for (let j = 0; j < this.arr[0].length; j++) {
+                neigh = this.count_alive_neighbours(i, j);
                 if (neigh < 2)
                     nextarr[i][j] = 0;
-                else if (neigh < 4) {
-
+                else if (neigh >= 2 && neigh <= 3 && arr[i][j] === 1) {
                     nextarr[i][j] = 1;
-                } else {
+                } else if (neigh > 3) {
+                    console.log("buf")
                     nextarr[i][j] = 0;
-                    console.log("i die!")
-                }
-                if (arr[i][j] === 0 && neigh === 3)
+                } else if (arr[i][j] === 0 && neigh === 3)
                     nextarr[i][j] = 1;
-                console.log(i, j)
             }
         }
-        this.arr = nextarr;
+        this.arr = [...nextarr]
     }
 
     sleep(ms) {
@@ -90,9 +87,10 @@ class Game {
     }
     async loop() {
         while (42) {
-            await this.sleep(1000);
-            this.step();
+            await this.sleep(500);
+
             this.draw();
+            this.step();
         }
     }
 }
